@@ -1,22 +1,27 @@
 const core = require('@actions/core');
-const wait = require('./wait');
+const github = require('@action/github');
+const Axios = require('axios');
 
-
-// most @actions toolkit packages have async methods
 async function run() {
+  const prUrl = core.getInput('urlInput');
+  const repoOwner = core.getInput('repoOwner');
+  const repoName = core.getInput('repoName');
+  const myToken = core.getInput('githubToken');
+
+  const octokit = new github.GitHub(myToken);
+  console.log(prUrl, repoOwner, repoName);
   try { 
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
-
-    core.debug((new Date()).toTimeString())
-    wait(parseInt(ms));
-    core.debug((new Date()).toTimeString())
-
-    core.setOutput('time', new Date().toTimeString());
+    const data = await octokit.pulls.get({
+      owner: "octokit",
+      repo: "rest.js",
+      pull_number: 1278,
+    });
+    console.log(data);
+    core.setSuccess('no');
   } 
   catch (error) {
-    core.setFailed(error.message);
+    Core.setFailed(error.message);
   }
 }
 
-run()
+run();
