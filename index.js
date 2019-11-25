@@ -2,14 +2,15 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const Axios = require('axios');
 
+const { GITHUB_REPOSITORY, GITHUB_EVENT_NAME, GITHUB_EVENT_PATH } = process.env;
+
 async function run() {
-  const prUrl = core.getInput('urlInput');
-  const repoOwner = core.getInput('repoOwner');
-  const repoName = core.getInput('repoName');
   const myToken = core.getInput('githubToken');
 
+  console.log(GITHUB_REPOSITORY, GITHUB_EVENT_NAME);
+  const event = require(GITHUB_EVENT_PATH);
+  console.log(event);
   const octokit = new github.GitHub(myToken);
-  console.log(prUrl, repoOwner, repoName);
   try { 
     const data = await octokit.pulls.get({
       owner: "octokit",
