@@ -1,5 +1,5 @@
 const core = require('@actions/core');
-const github = require('@action/github');
+const github = require('@actions/github');
 const Axios = require('axios');
 
 async function run() {
@@ -20,7 +20,7 @@ async function run() {
     core.setSuccess('no');
   } 
   catch (error) {
-    Core.setFailed(error.message);
+    core.setFailed(error.message);
   }
 }
 
