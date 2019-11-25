@@ -1,14 +1,12 @@
 name: 'postchangelog'
-description: 'posts a changelog :/'
+description: 'posts a changelog'
 inputs:
-  prUrl:
-    description: 'pr url'
+  discordPublishWebhook:
     required: true
-  repoOwner:
+  discordPreviewWebhook:
     required: true
-  repoName:
-    required: true
-  githubToken:
+  authorisedUsers:
+    description: 'Authorised users, seperated by comma'
     required: true
 runs:
   using: 'node12'
