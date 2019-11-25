@@ -1,28 +1,32 @@
 const core = require('@actions/core');
-const github = require('@actions/github');
-const Axios = require('axios');
+const axios = require('axios');
 
-const { GITHUB_REPOSITORY, GITHUB_EVENT_NAME, GITHUB_EVENT_PATH } = process.env;
+const { GITHUB_EVENT_NAME, GITHUB_EVENT_PATH } = process.env;
 
 async function run() {
-  const myToken = core.getInput('githubToken');
+  const webhook = core.getInput('discordWebhook');
+  const authorisedUsers = core.getInput('authorisedUsers').split(',');
 
-  console.log(GITHUB_REPOSITORY, GITHUB_EVENT_NAME);
+  if (GITHUB_EVENT_NAME != 'issue_comment')
+    return core.setFailed('Not a comment');
   const event = require(GITHUB_EVENT_PATH);
-  console.log(event);
-  const octokit = new github.GitHub(myToken);
-  try { 
-    const data = await octokit.pulls.get({
-      owner: "octokit",
-      repo: "rest.js",
-      pull_number: 1278,
-    });
-    console.log(data);
-    core.setSuccess('no');
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
+  if (typeof event.pull_request !== 'undefined')
+    return core.setFailed('Not a PR');
+  if (!authorisedUsers.includes(event.user.login))
+    return core.setFailed('Unauthorised!');
+  
+  axios({
+    method: 'post',
+    url: webhook,
+    data: {
+      embeds: [{
+        title: event.issue.title,
+        description: event.issue.body
+      }]
+    }
+  }).catch(error => {
+    core.setFailed(error);
+  });
 }
 
 run();
