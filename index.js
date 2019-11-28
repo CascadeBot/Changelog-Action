@@ -1,22 +1,21 @@
 const core = require('@actions/core');
 const axios = require('axios');
 
+const { getEmbedFromBody } = require('./parser.js');
+
 require('dotenv').config();
 
 const { GITHUB_EVENT_NAME, GITHUB_EVENT_PATH } = process.env;
 
-function sendWebhook(event, webhook, color) {
+function sendWebhook(event, webhook, embed) {
+  console.log(embed);
   axios({
     method: 'post',
     url: webhook,
     data: {
       avatar_url: event.organization.avatar_url,
       username: event.organization.login,
-      embeds: [{
-        title: event.issue.title,
-        description: event.issue.body,
-        color
-      }]
+      embeds: [embed]
     }
   }).catch(error => {
     core.setFailed(error.message);
@@ -47,9 +46,9 @@ async function run() {
     return core.setFailed('Unauthorised!');
   
   if (event.comment.body.startsWith(';preview'))
-    sendWebhook(event, previewWebhook, 15158332);
+    sendWebhook(event, previewWebhook, getEmbedFromBody(event.issue.body));
   else if (event.comment.body.startsWith(';publish'))
-    sendWebhook(event, publishWebhook, 3447003);
+    sendWebhook(event, publishWebhook, getEmbedFromBody(event.issue.body));
   else {
     core.setFailed('Not a command');
   }
@@ -57,4 +56,37 @@ async function run() {
 
 run().catch(error => {
   core.setFailed('Event failed: ' + error.message);
+  console.error(error)
 });
+
+/*
+TITLE: merge donation stuff
+
+body:
+
+afl
+sdflkj
+sdflkj
+sdflj
+
+[changelog]
+;t Donation rewards are here!!
+;d Description
+
+;f title
+content
+content
+
+;if title
+ - content
+content
+
+;fo footer text
+
+;i https://personal.natwest.com/content/dam/natwest/personal/site-wide/illustrations/image.dim.full.nw-pers-ill-thoughts-rectangle-transparent.png
+;c blue
+
+<b> 
+
+
+*/
