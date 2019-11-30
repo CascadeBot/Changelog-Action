@@ -89,9 +89,8 @@ function getEmbedsFromBody(body) {
     let outputEmbeds = [];
     let outputEmbed = {};
     
-    body = body.replace("\r", "");
+    body = body.replace(/\r*/g, "");
     body.split("\n").forEach(line => {
-        console.log(line);
         if (line === "[changelog]") {
             if (parsingChangelog) {
                 if (currentCommand.length !== 0)
