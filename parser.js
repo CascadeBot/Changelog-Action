@@ -95,6 +95,8 @@ function getEmbedsFromBody(body) {
                 if (currentCommand.length !== 0)
                     outputEmbed = handleCommand(currentCommand, currentScope, outputEmbed);
                 outputEmbeds.push(outputEmbed);
+                currentScope = "";
+                currentCommand = "";
                 outputEmbed = {};
             }
             parsingChangelog = true;
