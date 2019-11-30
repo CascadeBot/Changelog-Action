@@ -38,7 +38,7 @@ async function run() {
   } catch (error) {
     return core.setFailed('Invalid event file: \'' + GITHUB_EVENT_PATH + '\'');
   }
-  console.log(event);
+  console.log(JSON.stringify(event));
   if (typeof event.pull_request !== 'undefined')
     return core.setFailed('Not a PR');
 
