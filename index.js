@@ -8,6 +8,7 @@ require('dotenv').config();
 const { GITHUB_EVENT_NAME, GITHUB_EVENT_PATH } = process.env;
 
 function sendWebhook(event, webhook, embeds) {
+  console.log(event, webhook, embeds);
   axios({
     method: 'post',
     url: webhook,
@@ -37,7 +38,7 @@ async function run() {
   } catch (error) {
     return core.setFailed('Invalid event file: \'' + GITHUB_EVENT_PATH + '\'');
   }
-
+  console.log(event);
   if (typeof event.pull_request !== 'undefined')
     return core.setFailed('Not a PR');
 
