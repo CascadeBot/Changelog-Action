@@ -48,7 +48,7 @@ function parseField(str) {
     return {
         key: 'fields',
         data: [{
-            name: str.substring(0, str.substring(0, str.indexOf("\n"))),
+            name: str.substring(0, str.indexOf("\n")),
             value: str.substring(str.indexOf("\n") + 1)
         }]
     };
@@ -65,7 +65,7 @@ const commands = {
 };
 
 function handleCommand(currentCommand, currentScope, outputEmbed) {
-    const output = commands[currentCommand](currentScope);
+    const output = commands[currentCommand](currentScope.trim());
     if (typeof output.key === 'undefined') {
         outputEmbed = {...outputEmbed, ...output.data};
     } else {
@@ -82,38 +82,46 @@ function handleCommand(currentCommand, currentScope, outputEmbed) {
     return (outputEmbed);
 }
 
-function getEmbedFromBody(body) {
+function getEmbedsFromBody(body) {
     let parsingChangelog = false
     let currentCommand = "";
     let currentScope = "";
+    let outputEmbeds = [];
     let outputEmbed = {};
     
     body.split("\n").forEach(line => {
-        if (line === "[changelog]") parsingChangelog = true;
-        if (line === "[changelog]" || !parsingChangelog) return;
+        if (line === "[changelog]") {
+            if (parsingChangelog) {
+                if (currentCommand.length !== 0)
+                    outputEmbed = handleCommand(currentCommand, currentScope, outputEmbed);
+                outputEmbeds.push(outputEmbed);
+                outputEmbed = {};
+            }
+            parsingChangelog = true;
+            return;
+        }
+        if (!parsingChangelog) return;
 
         if (line.startsWith(";")) {
             let command = line.substring(1, line.indexOf(" "));
             let arg = line.substring(line.indexOf(" ") + 1);
-            
-            console.log("command:" + command,
-                "arg: " + arg);
 
             if (currentCommand.length !== 0) {
                 outputEmbed = handleCommand(currentCommand, currentScope, outputEmbed);
                 currentScope = "";
             }
             currentCommand = command;
-            currentScope += arg;
+            currentScope += currentScope.length === 0 ? arg : "\n" + arg;
         }
         else
-            currentScope += line;
+            currentScope += currentScope.length === 0 ? line : "\n" + line;
     });
     if (currentCommand.length !== 0)
         outputEmbed = handleCommand(currentCommand, currentScope, outputEmbed);
-    return outputEmbed;
+    outputEmbeds.push(outputEmbed);
+    return outputEmbeds;
 }
 
 module.exports = {
-    getEmbedFromBody,
+    getEmbedsFromBody,
 }

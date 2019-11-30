@@ -3,6 +3,8 @@ const colors = {
 };
 
 function getColor(name) {
+    if (name.startsWith('#'))
+        return parseInt(name.replace('#', ''), 10);
     let color = colors[name.toLowerCase()];
     if (typeof color === 'undefined')
         return (false);

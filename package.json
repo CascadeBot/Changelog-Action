@@ -1,7 +1,7 @@
 {
-  "name": "changelogger",
+  "name": "cascade-changelog",
   "version": "1.0.0",
-  "description": "Get la changelog",
+  "description": "parses changelog from pullrequest body",
   "main": "index.js",
   "scripts": {
     "run": "node ."

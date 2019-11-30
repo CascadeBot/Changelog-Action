@@ -1,9 +1,11 @@
-name: 'postchangelog'
-description: 'posts a changelog'
+name: 'cascade-changelog'
+description: 'parses changelog from pullrequest body'
 inputs:
   discordPublishWebhook:
+    description: 'Discord webhook to send the public changelog to.'
     required: true
   discordPreviewWebhook:
+    description: 'Discord webhook to send the preview to.'
     required: true
   authorisedUsers:
     description: 'Authorised users, seperated by comma'
