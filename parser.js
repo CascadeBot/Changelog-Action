@@ -90,6 +90,7 @@ function getEmbedsFromBody(body) {
     let outputEmbed = {};
     
     body.split("\n").forEach(line => {
+        console.log(line);
         if (line === "[changelog]") {
             if (parsingChangelog) {
                 if (currentCommand.length !== 0)
