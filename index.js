@@ -29,7 +29,7 @@ async function run() {
   const authorisedUsers = core.getInput('authorisedUsers').split(',');
   
   if (GITHUB_EVENT_NAME != 'issue_comment')
-  return core.setFailed('Not a comment');
+  return;
 
   let event;
   try {
