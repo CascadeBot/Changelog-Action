@@ -64,3 +64,5 @@ typings/
 
 # event test
 event.json
+
+node_modules/
