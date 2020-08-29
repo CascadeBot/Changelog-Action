@@ -8,6 +8,8 @@ require('dotenv').config();
 const { GITHUB_EVENT_NAME, GITHUB_EVENT_PATH } = process.env;
 
 function sendWebhook(event, webhook, embeds) {
+  if (embeds.length == 0)
+    return true; // no embeds to send
   axios({
     method: 'post',
     url: webhook,
